@@ -14,30 +14,250 @@ Governed artifact registry for [ADK-Rust Enterprise](https://enterprise.adk-rust
 ## Key Principles
 
 - **Content-immutable** — updates create new versions, never overwrite
-- **Provenance-linked** — every artifact tracks its lineage (derived_from, redacted_from, etc.)
+- **Provenance-linked** — every artifact tracks its lineage
 - **Hash-verified** — SHA-256 integrity on every version
 - **Policy-driven lifecycle** — retention classes prevent premature deletion
 - **Redaction by derivation** — redacted copies are new artifacts, originals preserved
 
-## Tools
+## Tools (15)
 
 | Tool | Purpose | Risk Class |
 |------|---------|------------|
-| `list_folders` | Browse workspace folder hierarchy | Read-only |
-| `list_artifacts` | List artifacts by folder, session, owner, class | Read-only |
-| `get_artifact_metadata` | Inspect provenance, retention, hash, source | Read-only |
-| `read_artifact` | Read content (policy-gated) | Read-only |
 | `write_artifact` | Store a generated artifact | Internal write |
 | `create_artifact_version` | Add new version to existing artifact | Internal write |
-| `redact_artifact` | Create redacted derived copy | Internal write |
-| `derive_artifact` | Create artifact derived from another | Internal write |
-| `link_artifacts` | Add provenance edge between artifacts | Internal write |
-| `export_artifact_package` | Bundle related artifacts for audit/delivery | Read-only |
-| `verify_artifact_integrity` | Validate SHA-256 hash and provenance | Read-only |
+| `read_artifact` | Read content (policy-gated) | Read-only |
+| `list_artifacts` | List artifacts by folder, session, class | Read-only |
+| `list_folders` | Browse workspace folder hierarchy | Read-only |
+| `get_artifact_metadata` | Inspect provenance, retention, hash | Read-only |
+| `verify_artifact_integrity` | Validate SHA-256 hash | Read-only |
 | `get_artifact_lineage` | Trace provenance chain | Read-only |
+| `export_artifact_package` | Bundle artifacts for audit/delivery | Read-only |
+| `derive_artifact` | Create artifact derived from another | Internal write |
+| `redact_artifact` | Create redacted derived copy | Internal write |
+| `link_artifacts` | Add provenance edge | Internal write |
 | `set_retention_class` | Update retention policy | Internal write |
-| `request_artifact_access` | Request access to policy-gated artifact | External write |
+| `request_artifact_access` | Request access to gated artifact | External write |
 | `delete_artifact_if_allowed` | Delete only if retention permits | Internal write |
+
+## Example Prompts & Outputs
+
+### Store a report
+
+**Prompt:** "Save this analysis report as a session artifact"
+
+**Tool call:** `write_artifact`
+```json
+{
+  "name": "quarterly-analysis.json",
+  "folder_path": "/reports/2026-Q2",
+  "content_base64": "eyJyZXZlbnVlIjogIjEuMk0iLCAiZ3Jvd3RoIjogIjE1JSJ9",
+  "mime_type": "application/json",
+  "artifact_class": "session_output",
+  "retention_class": "standard",
+  "tags": ["finance", "Q2-2026"]
+}
+```
+
+**Output:**
+```json
+{
+  "artifact_id": "art_c2a2bcf2f86f48a88eba7168612e2904",
+  "version_id": "artv_b9c87a30425843ff8837672beee05b37",
+  "status": "created"
+}
+```
+
+---
+
+### Inspect an artifact
+
+**Prompt:** "Show me the metadata for that report"
+
+**Tool call:** `get_artifact_metadata`
+```json
+{ "artifact_id": "art_c2a2bcf2f86f48a88eba7168612e2904" }
+```
+
+**Output:**
+```json
+{
+  "artifact_id": "art_c2a2bcf2f86f48a88eba7168612e2904",
+  "folder_path": "/reports/2026-Q2",
+  "name": "quarterly-analysis.json",
+  "artifact_class": "session_output",
+  "owner": "system",
+  "session_id": "ses_test_001",
+  "risk_level": "low",
+  "retention_class": "standard",
+  "status": "active",
+  "current_version": {
+    "version_id": "artv_b9c87a30425843ff8837672beee05b37",
+    "version_number": 1,
+    "mime_type": "application/json",
+    "size_bytes": 42,
+    "sha256": "da09a1f13a3d728bccc87bc001a2950163c8a1cd96161a0390da1660467ffb86",
+    "created_at": "2026-05-23T11:29:42Z"
+  },
+  "tags": ["finance", "Q2-2026"],
+  "created_at": "2026-05-23T11:29:42Z",
+  "updated_at": "2026-05-23T11:29:42Z"
+}
+```
+
+---
+
+### Verify integrity
+
+**Prompt:** "Verify the integrity of this artifact"
+
+**Tool call:** `verify_artifact_integrity`
+```json
+{ "artifact_id": "art_c2a2bcf2f86f48a88eba7168612e2904" }
+```
+
+**Output:**
+```json
+{
+  "artifact_id": "art_c2a2bcf2f86f48a88eba7168612e2904",
+  "version_id": "artv_b9c87a30425843ff8837672beee05b37",
+  "expected_sha256": "da09a1f13a3d728bccc87bc001a2950163c8a1cd96161a0390da1660467ffb86",
+  "actual_sha256": "da09a1f13a3d728bccc87bc001a2950163c8a1cd96161a0390da1660467ffb86",
+  "integrity_valid": true,
+  "size_bytes": 42
+}
+```
+
+---
+
+### Derive a summary from a source artifact
+
+**Prompt:** "Create an executive summary derived from the quarterly report"
+
+**Tool call:** `derive_artifact`
+```json
+{
+  "source_artifact_id": "art_c2a2bcf2f86f48a88eba7168612e2904",
+  "name": "executive-summary.md",
+  "content_base64": "IyBRMiBTdW1tYXJ5CgpSZXZlbnVlIGdyZXcgMTUlIHRvICQxLjJNLg==",
+  "mime_type": "text/markdown"
+}
+```
+
+**Output:**
+```json
+{
+  "derived_artifact_id": "art_aa3a2a0a5c3744988393209258b32a15",
+  "source_artifact_id": "art_c2a2bcf2f86f48a88eba7168612e2904"
+}
+```
+
+---
+
+### Trace provenance
+
+**Prompt:** "Show me the lineage of the quarterly report"
+
+**Tool call:** `get_artifact_lineage`
+```json
+{ "artifact_id": "art_c2a2bcf2f86f48a88eba7168612e2904" }
+```
+
+**Output:**
+```json
+{
+  "artifact_id": "art_c2a2bcf2f86f48a88eba7168612e2904",
+  "derived_from": [],
+  "derived_to": [
+    {
+      "edge_id": "edge_98637dc4d55c40aa9c03e238551230f9",
+      "edge_type": "derived_from",
+      "from_artifact_id": "art_c2a2bcf2f86f48a88eba7168612e2904",
+      "to_artifact_id": "art_aa3a2a0a5c3744988393209258b32a15",
+      "created_at": "2026-05-23T11:30:26Z"
+    }
+  ]
+}
+```
+
+---
+
+### Retention enforcement
+
+**Prompt:** "Mark this as an audit artifact and try to delete it"
+
+**Tool call:** `set_retention_class`
+```json
+{ "artifact_id": "art_c2a2bcf2f86f48a88eba7168612e2904", "retention_class": "audit" }
+```
+
+**Output:**
+```json
+{ "artifact_id": "art_c2a2bcf2f86f48a88eba7168612e2904", "retention_class": "audit" }
+```
+
+**Tool call:** `delete_artifact_if_allowed`
+```json
+{ "artifact_id": "art_c2a2bcf2f86f48a88eba7168612e2904" }
+```
+
+**Output:**
+```
+Deletion blocked: retention class Audit prevents deletion
+```
+
+---
+
+### Redact sensitive content
+
+**Prompt:** "Create a redacted version of this transcript for sharing"
+
+**Tool call:** `redact_artifact`
+```json
+{
+  "artifact_id": "art_transcript_001",
+  "redacted_content_base64": "VHJhbnNjcmlwdDogW1JFREFDVEVEXSBkaXNjdXNzZWQgcHJpY2luZy4=",
+  "mime_type": "text/plain",
+  "fields_removed": ["customer_name", "phone_number", "account_id"]
+}
+```
+
+**Output:**
+```json
+{
+  "redacted_artifact_id": "art_f7b2c1d4e5a6...",
+  "source_artifact_id": "art_transcript_001"
+}
+```
+
+---
+
+### Export audit package
+
+**Prompt:** "Bundle these artifacts for the compliance audit"
+
+**Tool call:** `export_artifact_package`
+```json
+{
+  "artifact_ids": [
+    "art_c2a2bcf2f86f48a88eba7168612e2904",
+    "art_aa3a2a0a5c3744988393209258b32a15"
+  ]
+}
+```
+
+**Output:**
+```json
+{
+  "package_id": "pkg_4f8a2b1c...",
+  "artifact_count": 2,
+  "artifacts": [
+    { "artifact_id": "art_c2a2...", "name": "quarterly-analysis.json", ... },
+    { "artifact_id": "art_aa3a...", "name": "executive-summary.md", ... }
+  ]
+}
+```
+
+---
 
 ## Backends
 
@@ -86,7 +306,7 @@ Add to `.kiro/settings/mcp.json`:
 }
 ```
 
-### Codex / Cursor / Windsurf / Open Code
+### Codex / Cursor / Windsurf / Antigravity / Open Code
 
 Same pattern — point `command` to the binary and set `ARTIFACT_STORE_PATH`.
 
@@ -95,9 +315,9 @@ Same pattern — point `command` to the binary and set `ARTIFACT_STORE_PATH`.
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `ARTIFACT_STORE_PATH` | Local blob storage root | `./artifacts` |
-| `AWS_REGION` | S3 region (when using s3 feature) | — |
+| `AWS_REGION` | S3 region (s3 feature) | — |
 | `ARTIFACT_S3_BUCKET` | S3 bucket name | — |
-| `GCP_PROJECT_ID` | GCP project (when using gcs feature) | — |
+| `GCP_PROJECT_ID` | GCP project (gcs feature) | — |
 | `ARTIFACT_GCS_BUCKET` | GCS bucket name | — |
 
 ## Artifact Classes
@@ -116,13 +336,26 @@ Same pattern — point `command` to the binary and set `ARTIFACT_STORE_PATH`.
 
 | Class | Default Retention | Deletable? |
 |-------|-------------------|------------|
-| `ephemeral` | Hours/days | Yes |
-| `standard` | 90 days | Yes |
-| `session` | 30–180 days | Yes |
-| `pii_restricted` | Short + redaction | Gated |
-| `payment_evidence` | Legal retention | No |
-| `audit` | 1–7 years | No |
-| `build_release` | Tied to release | No |
+| `ephemeral` | Hours/days | ✅ Yes |
+| `standard` | 90 days | ✅ Yes |
+| `session` | 30–180 days | ✅ Yes |
+| `pii_restricted` | Short + redaction | ⚠️ Gated |
+| `payment_evidence` | Legal retention | ❌ No |
+| `audit` | 1–7 years | ❌ No |
+| `build_release` | Tied to release | ❌ No |
+
+## Provenance Edge Types
+
+| Edge | Meaning |
+|------|---------|
+| `derived_from` | Artifact B was created from artifact A |
+| `redacted_from` | Artifact B is a redacted copy of A |
+| `bundled_into` | Artifact A was included in package B |
+| `exported_from` | Artifact B was exported from system A |
+| `generated_by` | Artifact was generated by a tool/agent |
+| `validated_by` | Artifact was validated by a policy check |
+| `approved_by` | Artifact was approved by a human/gate |
+| `evidence_for` | Artifact serves as evidence for a decision |
 
 ## Documentation
 
