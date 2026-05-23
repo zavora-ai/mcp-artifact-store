@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 540" font-family="Inter, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#059669"/><stop offset="100%" style="stop-color:#10b981"/>
+    </linearGradient>
+    <linearGradient id="sg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f2a1e"/><stop offset="100%" style="stop-color:#1a3d2e"/>
+    </linearGradient>
+    <linearGradient id="tg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#047857"/><stop offset="100%" style="stop-color:#065f46"/>
+    </linearGradient>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/><stop offset="100%" style="stop-color:#1e293b"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="540" rx="12" fill="#0a1a12"/>
+
+  <text x="400" y="32" text-anchor="middle" fill="#d1fae5" font-size="16" font-weight="700">Artifact Store MCP — Architecture</text>
+
+  <!-- Agents -->
+  <rect x="40" y="48" width="720" height="44" rx="8" fill="#1a3d2e" stroke="#059669" stroke-width="1"/>
+  <text x="400" y="75" text-anchor="middle" fill="#a7f3d0" font-size="12" font-weight="600">MCP Agents · Sessions · Workflows · Skills · Payments · Governance</text>
+
+  <!-- Server -->
+  <rect x="40" y="108" width="720" height="310" rx="10" fill="url(#sg)" stroke="#059669" stroke-width="1.5"/>
+  <text x="400" y="132" text-anchor="middle" fill="url(#hg)" font-size="14" font-weight="700">Artifact Store MCP Server</text>
+
+  <!-- Tools row 1 -->
+  <rect x="55" y="145" width="135" height="42" rx="5" fill="url(#tg)"/>
+  <text x="122" y="163" text-anchor="middle" fill="#ecfdf5" font-size="9" font-weight="600">write_artifact</text>
+  <text x="122" y="178" text-anchor="middle" fill="#6ee7b7" font-size="8">create_version</text>
+
+  <rect x="198" y="145" width="135" height="42" rx="5" fill="url(#tg)"/>
+  <text x="265" y="163" text-anchor="middle" fill="#ecfdf5" font-size="9" font-weight="600">read_artifact</text>
+  <text x="265" y="178" text-anchor="middle" fill="#6ee7b7" font-size="8">get_metadata</text>
+
+  <rect x="341" y="145" width="135" height="42" rx="5" fill="url(#tg)"/>
+  <text x="408" y="163" text-anchor="middle" fill="#ecfdf5" font-size="9" font-weight="600">redact_artifact</text>
+  <text x="408" y="178" text-anchor="middle" fill="#6ee7b7" font-size="8">derive_artifact</text>
+
+  <rect x="484" y="145" width="135" height="42" rx="5" fill="url(#tg)"/>
+  <text x="551" y="163" text-anchor="middle" fill="#ecfdf5" font-size="9" font-weight="600">verify_integrity</text>
+  <text x="551" y="178" text-anchor="middle" fill="#6ee7b7" font-size="8">get_lineage</text>
+
+  <rect x="627" y="145" width="120" height="42" rx="5" fill="url(#tg)"/>
+  <text x="687" y="163" text-anchor="middle" fill="#ecfdf5" font-size="9" font-weight="600">export_package</text>
+  <text x="687" y="178" text-anchor="middle" fill="#6ee7b7" font-size="8">link · list · delete</text>
+
+  <!-- Metadata Store -->
+  <rect x="55" y="200" width="340" height="90" rx="6" fill="url(#bg)" stroke="#334155" stroke-width="1"/>
+  <text x="225" y="220" text-anchor="middle" fill="#f1f5f9" font-size="11" font-weight="600">Metadata Registry</text>
+  <text x="225" y="240" text-anchor="middle" fill="#94a3b8" font-size="9">artifacts · versions · edges · retention</text>
+  <rect x="75" y="252" width="90" height="28" rx="4" fill="#1e293b" stroke="#475569" stroke-width="0.5"/>
+  <text x="120" y="270" text-anchor="middle" fill="#cbd5e1" font-size="8">Artifacts</text>
+  <rect x="175" y="252" width="90" height="28" rx="4" fill="#1e293b" stroke="#475569" stroke-width="0.5"/>
+  <text x="220" y="270" text-anchor="middle" fill="#cbd5e1" font-size="8">Versions</text>
+  <rect x="275" y="252" width="100" height="28" rx="4" fill="#1e293b" stroke="#475569" stroke-width="0.5"/>
+  <text x="325" y="270" text-anchor="middle" fill="#cbd5e1" font-size="8">Provenance</text>
+
+  <!-- Blob Store -->
+  <rect x="410" y="200" width="340" height="90" rx="6" fill="url(#bg)" stroke="#334155" stroke-width="1"/>
+  <text x="580" y="220" text-anchor="middle" fill="#f1f5f9" font-size="11" font-weight="600">Blob Storage</text>
+  <text x="580" y="240" text-anchor="middle" fill="#94a3b8" font-size="9">content-immutable · SHA-256 verified</text>
+  <rect x="430" y="252" width="95" height="28" rx="4" fill="#1e293b" stroke="#475569" stroke-width="0.5"/>
+  <text x="477" y="270" text-anchor="middle" fill="#6ee7b7" font-size="8">Local FS</text>
+  <rect x="535" y="252" width="95" height="28" rx="4" fill="#1e293b" stroke="#475569" stroke-width="0.5"/>
+  <text x="582" y="270" text-anchor="middle" fill="#fcd34d" font-size="8">AWS S3</text>
+  <rect x="640" y="252" width="95" height="28" rx="4" fill="#1e293b" stroke="#475569" stroke-width="0.5"/>
+  <text x="687" y="270" text-anchor="middle" fill="#93c5fd" font-size="8">GCS</text>
+
+  <!-- Provenance Graph -->
+  <rect x="55" y="305" width="695" height="55" rx="6" fill="#0c1a12" stroke="#334155" stroke-width="1"/>
+  <text x="400" y="325" text-anchor="middle" fill="#d1fae5" font-size="11" font-weight="600">Provenance Graph</text>
+  <text x="400" y="345" text-anchor="middle" fill="#94a3b8" font-size="9">derived_from · redacted_from · bundled_into · exported_from · generated_by · validated_by · approved_by · evidence_for</text>
+
+  <!-- Retention -->
+  <rect x="55" y="372" width="695" height="35" rx="6" fill="#0c1a12" stroke="#334155" stroke-width="1"/>
+  <text x="400" y="394" text-anchor="middle" fill="#94a3b8" font-size="9">Retention: ephemeral · standard · session · pii_restricted · payment_evidence · audit · build_release</text>
+
+  <!-- Badges -->
+  <rect x="40" y="430" width="90" height="22" rx="4" fill="#059669"/>
+  <text x="85" y="445" text-anchor="middle" fill="white" font-size="9" font-weight="600">rmcp 1.7</text>
+
+  <rect x="140" y="430" width="120" height="22" rx="4" fill="#047857"/>
+  <text x="200" y="445" text-anchor="middle" fill="white" font-size="9" font-weight="600">Content-Immutable</text>
+
+  <rect x="270" y="430" width="100" height="22" rx="4" fill="#0891b2"/>
+  <text x="320" y="445" text-anchor="middle" fill="white" font-size="9" font-weight="600">SHA-256 Verified</text>
+
+  <rect x="380" y="430" width="110" height="22" rx="4" fill="#7c3aed"/>
+  <text x="435" y="445" text-anchor="middle" fill="white" font-size="9" font-weight="600">Provenance Graph</text>
+
+  <rect x="500" y="430" width="80" height="22" rx="4" fill="#d97706"/>
+  <text x="540" y="445" text-anchor="middle" fill="white" font-size="9" font-weight="600">15 Tools</text>
+
+  <rect x="590" y="430" width="170" height="22" rx="4" fill="#be185d"/>
+  <text x="675" y="445" text-anchor="middle" fill="white" font-size="9" font-weight="600">ADK-Rust Enterprise Ready</text>
+
+  <text x="400" y="480" text-anchor="middle" fill="#64748b" font-size="10">enterprise.adk-rust.com · Zavora AI · Apache-2.0</text>
+</svg>

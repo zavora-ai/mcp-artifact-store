@@ -1,0 +1,116 @@
+server_id = "mcp_artifact_store"
+display_name = "Artifact Store MCP"
+version = "1.0.0"
+domain = "platform"
+sdk_version = "0.1.0"
+risk_level = "high"
+writes_allowed = "gated"
+transports = ["stdio", "streamable_http"]
+credentials = ["vault://artifact-storage"]
+governance_gates = ["policy_evaluation_for_sensitive", "audit_all_writes"]
+environments = ["development", "staging", "production"]
+
+[[tools]]
+name = "list_folders"
+description = "Browse workspace folder hierarchy"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "list_artifacts"
+description = "List artifacts by folder, session, owner, type, or class"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "get_artifact_metadata"
+description = "Inspect provenance, retention, access, hash, source"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "read_artifact"
+description = "Read artifact content when policy permits"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://artifact-storage"]
+
+[[tools]]
+name = "write_artifact"
+description = "Store a generated artifact with metadata and provenance"
+risk_class = "internal_write"
+requires_approval = false
+credential_bindings = ["vault://artifact-storage"]
+
+[[tools]]
+name = "create_artifact_version"
+description = "Add a new version to an existing artifact"
+risk_class = "internal_write"
+requires_approval = false
+credential_bindings = ["vault://artifact-storage"]
+
+[[tools]]
+name = "redact_artifact"
+description = "Create a redacted derived copy of a sensitive artifact"
+risk_class = "internal_write"
+requires_approval = true
+credential_bindings = ["vault://artifact-storage"]
+
+[[tools]]
+name = "derive_artifact"
+description = "Create an artifact derived from another with provenance link"
+risk_class = "internal_write"
+requires_approval = false
+credential_bindings = ["vault://artifact-storage"]
+
+[[tools]]
+name = "link_artifacts"
+description = "Add a provenance edge between two artifacts"
+risk_class = "internal_write"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "export_artifact_package"
+description = "Bundle related artifacts for audit or delivery"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://artifact-storage"]
+
+[[tools]]
+name = "verify_artifact_integrity"
+description = "Validate hash and provenance trail"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://artifact-storage"]
+
+[[tools]]
+name = "get_artifact_lineage"
+description = "Trace provenance chain for an artifact"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = []
+
+[[tools]]
+name = "set_retention_class"
+description = "Update retention policy on an artifact"
+risk_class = "internal_write"
+requires_approval = true
+credential_bindings = []
+
+[[tools]]
+name = "request_artifact_access"
+description = "Request access to a policy-gated artifact"
+risk_class = "external_write"
+requires_approval = true
+credential_bindings = []
+
+[[tools]]
+name = "delete_artifact_if_allowed"
+description = "Delete artifact only if retention policy permits"
+risk_class = "internal_write"
+requires_approval = true
+credential_bindings = ["vault://artifact-storage"]
