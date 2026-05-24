@@ -1,5 +1,6 @@
 use std::sync::Arc;
 use chrono::Utc;
+use adk_mcp_sdk::{HealthCheck, HealthStatus};
 use rmcp::{handler::server::wrapper::Parameters, schemars, tool, tool_router};
 use serde::{Deserialize, Serialize};
 use sha2::{Sha256, Digest};
@@ -484,5 +485,16 @@ impl ArtifactStoreServer {
         serde_json::to_string_pretty(&serde_json::json!({
             "artifact_id": i.artifact_id, "status": "deleted"
         })).unwrap()
+    }
+}
+
+#[async_trait::async_trait]
+impl HealthCheck for ArtifactStoreServer {
+    async fn check_health(&self) -> HealthStatus {
+        HealthStatus {
+            healthy: true,
+            message: Some("operational".into()),
+            latency_ms: Some(1),
+        }
     }
 }

@@ -1653,7 +1653,7 @@ dependencies = [
 
 [[package]]
 name = "mcp-artifact-store"
-version = "1.0.1"
+version = "1.1.0"
 dependencies = [
  "adk-mcp-sdk",
  "anyhow",
