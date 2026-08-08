@@ -5,7 +5,7 @@ Thank you for your interest in contributing! This server is part of the [ADK-Rus
 ## Getting Started
 
 ```bash
-# Requires Rust 1.85+ (2024 edition)
+# Requires Rust 1.94.1+ (2024 edition)
 git clone https://github.com/zavora-ai/mcp-artifact-store
 cd mcp-artifact-store
 cargo build --features all-backends
