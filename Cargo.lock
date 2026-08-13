@@ -4,14 +4,15 @@ version = 4
 
 [[package]]
 name = "adk-mcp-sdk"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0da15f083bddfc93a1d0d5ff71390de4af24d795ee799a1b382c110ca4f7d3d4"
+version = "0.2.0"
+source = "git+https://github.com/zavora-ai/adk-mcp-sdk.git?rev=4dac4301441a8a51a042fd66cc1798f0ec3e3f55#4dac4301441a8a51a042fd66cc1798f0ec3e3f55"
 dependencies = [
  "async-trait",
+ "rmcp",
  "serde",
  "serde_json",
  "thiserror",
+ "tokio",
  "toml",
 ]
 
@@ -2418,6 +2419,7 @@ dependencies = [
  "bytes",
  "chrono",
  "futures",
+ "hmac 0.13.0",
  "http 1.4.0",
  "http-body 1.0.1",
  "http-body-util",
@@ -2428,6 +2430,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
+ "sha2 0.11.0",
  "sse-stream",
  "thiserror",
  "tokio",

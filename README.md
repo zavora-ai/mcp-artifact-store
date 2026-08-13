@@ -400,3 +400,28 @@ This server implements the [ADK MCP SDK](https://crates.io/crates/adk-mcp-sdk) c
 ## rmcp and MCP compatibility
 
 This server is built with [`rmcp` 3.1.2](https://github.com/modelcontextprotocol/rust-sdk/releases/tag/rmcp-v3.1.2) and requires Rust 1.94.1 or newer. The rmcp 3 rollout retains legacy MCP initialization compatibility and targets MCP protocol revisions `2025-11-25` and `2026-07-28`.
+
+## MCP 2026-07-28 rollout (P2 high-impact)
+
+This server uses `rmcp` 3.1.2 and `adk-mcp-sdk` 0.2 with a minimum supported
+Rust version of **1.94.1**. It accepts stateless MCP 2026 requests with
+per-request protocol, client identity, and capability metadata while retaining
+the legacy MCP 2025-11-25 initialize flow for ordinary tools.
+
+- **Tasks:** `export_artifact_package`
+- **MRTR approvals:** `write_artifact`, `create_artifact_version`, `redact_artifact`, `derive_artifact`, `link_artifacts`, `set_retention_class`, `request_artifact_access`, `delete_artifact_if_allowed`
+- **Discovery and routing:** rmcp serves on-demand discovery and validates the
+  per-request protocol envelope; HTTP deployments can route with `Mcp-Method`
+  and `Mcp-Name`. The packaged binary currently uses stdio.
+- **Caching:** `tools/list` returns a public `ttlMs` of 60,000 for MCP 2026;
+  rmcp omits the cache fields for legacy clients.
+- **Deprecated extensions:** this server does not add new Roots, Sampling, or
+  dynamic client-registration dependencies.
+
+Protected tools require `MCP_REQUEST_STATE_KEY` with at least 32 high-entropy
+bytes. All replicas must share that key so sealed approval state can resume on
+another instance. Approval state is bound to the client identity, tool, and
+arguments and expires after two minutes. Missing identity, invalid state,
+rejection, or legacy protocol use fails closed. Task records are process-local
+for the current stdio runtime; use a durable task store before deploying the
+server behind scale-to-zero HTTP infrastructure.

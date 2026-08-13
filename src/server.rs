@@ -108,7 +108,7 @@ pub struct DeleteArtifactInput { pub artifact_id: String }
 
 // --- Tool implementations ---
 
-#[tool_router(server_handler)]
+#[tool_router]
 impl ArtifactStoreServer {
     #[tool(description = "Browse workspace folder hierarchy")]
     async fn list_folders(&self, Parameters(i): Parameters<ListFoldersInput>) -> String {
@@ -497,4 +497,11 @@ impl HealthCheck for ArtifactStoreServer {
             latency_ms: Some(1),
         }
     }
+}
+
+adk_mcp_sdk::mcp_2026_server! {
+    server: ArtifactStoreServer,
+    task_tools: ["export_artifact_package"],
+    approval_tools: ["write_artifact", "create_artifact_version", "redact_artifact", "derive_artifact", "link_artifacts", "set_retention_class", "request_artifact_access", "delete_artifact_if_allowed"],
+    cache_ttl_ms: 60_000,
 }

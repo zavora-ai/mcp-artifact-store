@@ -1,13 +1,13 @@
 server_id = "mcp_artifact_store"
-display_name = "Artifact Store MCP"
-version = "1.0.0"
+display_name = "Artifact Store"
+version = "1.1.0"
 domain = "platform"
-sdk_version = "0.1.0"
+sdk_version = "0.2.0"
 risk_level = "high"
 writes_allowed = "gated"
-transports = ["stdio", "streamable_http"]
+transports = ["stdio"]
 credentials = ["vault://artifact-storage"]
-governance_gates = ["policy_evaluation_for_sensitive", "audit_all_writes"]
+governance_gates = ["policy_evaluation_for_sensitive", "audit_all_writes", "mrtr_approval"]
 environments = ["development", "staging", "production"]
 
 [[tools]]
@@ -42,14 +42,14 @@ credential_bindings = ["vault://artifact-storage"]
 name = "write_artifact"
 description = "Store a generated artifact with metadata and provenance"
 risk_class = "internal_write"
-requires_approval = false
+requires_approval = true
 credential_bindings = ["vault://artifact-storage"]
 
 [[tools]]
 name = "create_artifact_version"
 description = "Add a new version to an existing artifact"
 risk_class = "internal_write"
-requires_approval = false
+requires_approval = true
 credential_bindings = ["vault://artifact-storage"]
 
 [[tools]]
@@ -63,14 +63,14 @@ credential_bindings = ["vault://artifact-storage"]
 name = "derive_artifact"
 description = "Create an artifact derived from another with provenance link"
 risk_class = "internal_write"
-requires_approval = false
+requires_approval = true
 credential_bindings = ["vault://artifact-storage"]
 
 [[tools]]
 name = "link_artifacts"
 description = "Add a provenance edge between two artifacts"
 risk_class = "internal_write"
-requires_approval = false
+requires_approval = true
 credential_bindings = []
 
 [[tools]]
